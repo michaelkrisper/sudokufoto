@@ -1,0 +1,28 @@
+{
+  "name": "sudokufoto",
+  "version": "1.0.0",
+  "description": "Sudoku fotografieren und sofort die Lösung sehen: Erkennung und Löser laufen komplett im Browser, als installierbare Web-App",
+  "homepage": "https://michaelkrisper.github.io/sudokufoto/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/michaelkrisper/sudokufoto.git"
+  },
+  "author": "Michael Krisper",
+  "license": "MIT",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "serve": "python3 -m http.server 8792",
+    "lint": "biome check",
+    "lint:fix": "biome check --write",
+    "test": "node --test test/*.test.js",
+    "test:e2e": "node scripts/e2e.mjs",
+    "check": "npm run lint && npm test"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.5.15"
+  }
+}

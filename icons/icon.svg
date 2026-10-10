@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Sudoku-Foto">
+  <rect width="512" height="512" fill="#0a84ff"/>
+  <rect x="96" y="96" width="320" height="320" rx="10" fill="#fbfaf6"/>
+  <g stroke="#1c1c1e" fill="none">
+    <rect x="96" y="96" width="320" height="320" rx="10" stroke-width="12"/>
+    <path d="M202.7 96v320M309.3 96v320M96 202.7h320M96 309.3h320" stroke-width="8"/>
+    <path d="M131.6 96v320M167.1 96v320M238.2 96v320M273.8 96v320M344.9 96v320M380.4 96v320M96 131.6h320M96 167.1h320M96 238.2h320M96 273.8h320M96 344.9h320M96 380.4h320" stroke-width="2.5" opacity="0.45"/>
+  </g>
+  <g font-family="Helvetica, Arial, sans-serif" font-size="30" font-weight="700" text-anchor="middle" fill="#1c1c1e">
+    <text x="113.8" y="125">5</text><text x="185" y="125">3</text><text x="256" y="196">7</text>
+    <text x="149.3" y="267">6</text><text x="291.5" y="232">1</text><text x="362.7" y="303">9</text>
+    <text x="220.4" y="374">8</text><text x="398.2" y="410">4</text>
+  </g>
+  <g font-family="Helvetica, Arial, sans-serif" font-size="30" font-weight="400" text-anchor="middle" fill="#0a66d6">
+    <text x="149.3" y="125">4</text><text x="220.4" y="196">2</text><text x="327.1" y="267">8</text><text x="256" y="339">5</text>
+  </g>
+  <g stroke="#fff" stroke-width="18" stroke-linecap="round" fill="none">
+    <path d="M40 120V40h80M392 40h80v80M472 392v80h-80M120 472H40v-80"/>
+  </g>
+</svg>

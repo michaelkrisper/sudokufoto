@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Sudoku-Foto</title>
+  <meta name="description" content="Sudoku fotografieren und sofort die Lösung sehen. Läuft komplett auf dem Gerät.">
+  <meta name="theme-color" content="#000000">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Sudoku">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="js/app.js"></script>
+</head>
+<body>
+  <section id="cam" class="screen">
+    <div class="cam-view" id="cam-view">
+      <video id="video" playsinline muted autoplay></video>
+      <img id="still" alt="" hidden>
+      <canvas id="overlay"></canvas>
+      <p class="pill" id="cam-hint">Sudoku ins Bild halten</p>
+      <div class="cam-msg" id="cam-msg" hidden></div>
+    </div>
+    <footer class="cam-bar">
+      <label class="round" aria-label="Foto aus der Galerie">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="M4 18l5-5 4 4 3-3 4 4"/></svg>
+        <input type="file" accept="image/*" id="file" hidden>
+      </label>
+      <button type="button" class="shutter" id="shoot" aria-label="Aufnehmen"></button>
+      <button type="button" class="round" id="last" aria-label="Letztes Sudoku" hidden>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7"/><path d="M4 4v4h4"/><path d="M12 8v4l3 2"/></svg>
+      </button>
+      <button type="button" class="round" id="manual" aria-label="Von Hand eingeben">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="1.5"/><path d="M9 3v18M15 3v18M3 9h18M3 15h18"/></svg>
+      </button>
+    </footer>
+  </section>
+
+  <section id="review" class="screen" hidden>
+    <header class="top">
+      <button type="button" class="icon" data-go="cam" aria-label="Zurück zur Kamera">&#x2039;</button>
+      <h1 id="review-title">Ziffern prüfen</h1>
+      <button type="button" class="icon" id="clear-all" aria-label="Alles leeren">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M10 7V5h4v2M7 7l1 13h8l1-13"/></svg>
+      </button>
+    </header>
+    <p class="msg" id="review-msg"></p>
+    <div class="board-wrap"><div class="board" id="review-board"></div></div>
+    <div class="pad" id="pad"></div>
+    <div class="actions">
+      <button type="button" class="btn primary" id="solve-btn">Lösung zeigen</button>
+    </div>
+  </section>
+
+  <section id="solution" class="screen" hidden>
+    <header class="top">
+      <button type="button" class="icon" data-go="cam" aria-label="Neues Sudoku">&#x2039;</button>
+      <h1>Lösung</h1>
+      <button type="button" class="icon" id="edit" aria-label="Ziffern korrigieren">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13 7l4 4"/></svg>
+      </button>
+    </header>
+    <p class="msg" id="sol-msg"></p>
+    <div class="board-wrap"><div class="board" id="sol-board"></div></div>
+    <div class="seg" role="tablist">
+      <button type="button" data-view="grid" role="tab">Raster</button>
+      <button type="button" data-view="photo" role="tab">Im Foto</button>
+      <button type="button" data-view="hint" role="tab">Antippen</button>
+    </div>
+    <div class="actions">
+      <button type="button" class="btn primary" data-go="cam">Neues Sudoku</button>
+    </div>
+  </section>
+
+  <div class="busy" id="busy" hidden><div class="spinner"></div></div>
+</body>
+</html>
