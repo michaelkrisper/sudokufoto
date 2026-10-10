@@ -124,7 +124,9 @@ const overflow = `(() => {
   }
   return bad;
 })()`;
-const solutionText = `[...document.querySelectorAll('#sol-board .cell')].map((c) => c.textContent).join('')`;
+// in the photo the printed digits are not text: fill them in from the puzzle
+const solutionText = (puzzle) =>
+  `[...document.querySelectorAll('#sol-board .cell')].map((c, i) => c.textContent || '${puzzle}'[i]).join('')`;
 
 let ok = true;
 const check = (cond, what) => {
@@ -172,24 +174,12 @@ try {
   check(captured, `auto capture from live camera (${((Date.now() - t0) / 1000).toFixed(1)} s)`);
   await wait(400);
   await shot('2-solution');
-  check((await evaluate(solutionText)) === SOLUTION, 'solution from camera is right');
+  check((await evaluate(solutionText(PUZZLE))) === SOLUTION, 'solution from camera is right');
   check((await evaluate(overflow)).length === 0, 'solution screen does not overflow');
-  for (const v of ['photo', 'hint']) {
-    await evaluate(`document.querySelector('[data-view=${v}]').click()`);
-    await wait(300);
-    await shot(`3-solution-${v}`);
-  }
-  // hint mode: digits hidden until tapped
-  const hidden = await evaluate(`document.querySelectorAll('#sol-board .hidden-sol').length`);
-  await evaluate(
-    `document.querySelector('#sol-board .hidden-sol').dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }))`,
-  );
-  const hidden2 = await evaluate(`document.querySelectorAll('#sol-board .hidden-sol').length`);
   check(
-    hidden === [...PUZZLE].filter((c) => c === '0').length && hidden2 === hidden - 1,
-    `hint mode reveals one cell (${hidden} -> ${hidden2})`,
+    await evaluate(`document.getElementById('sol-board').classList.contains('photo')`),
+    'solution drawn into the photo',
   );
-  await evaluate(`document.querySelector('[data-view=grid]').click()`);
 
   // 2. review: change a given, the solver must notice
   await evaluate(`document.getElementById('edit').click()`);
@@ -226,7 +216,7 @@ try {
   await shot('5-picked');
   const where = await evaluate(`document.getElementById('solution').hidden ? 'review' : 'solution'`);
   check(picked && where === 'solution', `gallery photo goes straight to the solution (${where})`);
-  check((await evaluate(solutionText)) === SOLUTION2, 'solution from gallery photo is right');
+  check((await evaluate(solutionText(PUZZLE2))) === SOLUTION2, 'solution from gallery photo is right');
 
   // 4. landscape fits too
   await send('Emulation.setDeviceMetricsOverride', {

@@ -11,8 +11,6 @@ const S = {
   photo: null, // data URL of the rectified photo
   solution: null,
   count: 0,
-  view: 'grid',
-  revealed: new Set(),
   sel: -1,
 };
 
@@ -273,10 +271,8 @@ function accept(r) {
   c.width = c.height = r.viewSize;
   c.getContext('2d').putImageData(new ImageData(new Uint8ClampedArray(r.view), r.viewSize), 0, 0);
   S.photo = c.toDataURL('image/jpeg', 0.8);
-  S.revealed = new Set();
   S.sel = -1;
   if (r.count === 1 && !S.unsure.size) {
-    S.view = 'grid';
     computeSolution();
     save();
     showSolution();
@@ -438,7 +434,6 @@ $('solve-btn').addEventListener('click', () => {
     return;
   }
   S.unsure.clear();
-  S.revealed = new Set();
   save();
   showSolution();
 });
@@ -451,34 +446,18 @@ function computeSolution() {
 }
 
 const solBoard = $('sol-board');
-buildBoard(solBoard, (i) => {
-  if (S.view !== 'hint' || S.givens[i] || S.revealed.has(i)) return;
-  S.revealed.add(i);
-  save();
-  renderSolution(i);
-});
-
-for (const b of document.querySelectorAll('.seg button')) {
-  b.addEventListener('click', () => {
-    S.view = b.dataset.view;
-    save();
-    renderSolution();
-  });
-}
+buildBoard(solBoard, () => {});
 
 $('edit').addEventListener('click', () => {
   S.sel = -1;
   showReview();
 });
 
-function renderSolution(popped = -1) {
-  const photo = S.view === 'photo' && S.photo;
-  solBoard.classList.toggle('photo', !!photo);
+// always drawn into the photo; only typed-in puzzles have none
+function renderSolution() {
+  const photo = !!S.photo;
+  solBoard.classList.toggle('photo', photo);
   solBoard.style.backgroundImage = photo ? `url(${S.photo})` : '';
-  for (const b of document.querySelectorAll('.seg button')) {
-    b.setAttribute('aria-selected', String(b.dataset.view === S.view));
-    if (b.dataset.view === 'photo') b.hidden = !S.photo;
-  }
   for (const [i, c] of [...solBoard.children].entries()) {
     const given = S.givens[i];
     c.className = 'cell';
@@ -492,8 +471,7 @@ function renderSolution(popped = -1) {
     if (mine && mine !== S.solution[i]) {
       c.classList.add('wrong');
       badge(c, mine, 'hand');
-    } else if (S.view === 'hint' && !mine && !S.revealed.has(i)) c.classList.add('hidden-sol');
-    if (i === popped) c.classList.add('pop');
+    }
   }
   const [text, cls] = solutionText();
   const m = $('sol-msg');
@@ -506,16 +484,11 @@ function solutionText() {
   const mine = S.hand.filter(Boolean).length;
   const wrong = S.hand.filter((d, i) => d && d !== S.solution[i]).length;
   if (wrong) return [`${wrong} deiner ${mine} Einträge ${wrong > 1 ? 'sind' : 'ist'} falsch (rot).`, 'bad'];
-  if (S.view === 'hint') {
-    const left = S.givens.filter((d, i) => !d && !S.hand[i] && !S.revealed.has(i)).length;
-    return [left ? `Feld antippen, um es aufzudecken (${left} offen).` : 'Alles aufgedeckt.', ''];
-  }
   if (mine) return [`Deine ${mine} Einträge stimmen alle.`, 'good'];
   return ['Blau: die fehlenden Ziffern.', ''];
 }
 
 function showSolution() {
-  if (S.view === 'photo' && !S.photo) S.view = 'grid';
   show('solution');
   renderSolution();
 }
@@ -530,8 +503,6 @@ function save() {
         hand: S.hand,
         unsure: [...S.unsure],
         photo: S.photo,
-        view: S.view,
-        revealed: [...S.revealed],
       }),
     );
   } catch {
@@ -547,8 +518,6 @@ function load() {
     S.hand = d.hand ?? new Array(81).fill(0);
     S.unsure = new Set(d.unsure);
     S.photo = d.photo;
-    S.view = d.view ?? 'grid';
-    S.revealed = new Set(d.revealed);
     return true;
   } catch {
     return false;

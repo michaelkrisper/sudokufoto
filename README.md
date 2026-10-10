@@ -8,7 +8,7 @@ Sudoku mit dem Handy fotografieren, sofort die Lösung sehen. Installierbare Web
 - **Gedreht oder schräg fotografiert** ist egal: Perspektive wird entzerrt, Querformat und Kopfüber werden erkannt.
 - **Handschrift:** In einem angefangenen Sudoku werden Bleistift- und Kugelschreiber-Einträge von den gedruckten Ziffern unterschieden. Die Lösung zeigt dann, welche eigenen Einträge falsch sind.
 - **Prüfen und korrigieren:** Unsichere Ziffern sind markiert, jede Zelle lässt sich per Ziffernblock ändern; Sudokus lassen sich auch ganz von Hand eingeben.
-- **Lösung als Raster, direkt im Foto oder Feld für Feld aufdecken** (als Hinweis, ohne alles zu verraten).
+- **Lösung direkt im Foto:** die fehlenden Ziffern werden ins entzerrte Foto geschrieben.
 
 ## Wie es funktioniert
 

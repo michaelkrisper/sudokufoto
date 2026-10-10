@@ -257,9 +257,6 @@ svg {
   color: var(--solved);
   font-weight: 400;
 }
-.cell.hidden-sol {
-  color: transparent;
-}
 .cell.sel {
   background: rgb(10 132 255 / 0.28);
 }
@@ -271,15 +268,6 @@ svg {
 }
 .cell.conflict {
   background: rgb(255 69 58 / 0.4);
-}
-.cell.pop {
-  animation: pop 0.35s ease-out;
-}
-@keyframes pop {
-  from {
-    transform: scale(1.6);
-    opacity: 0;
-  }
 }
 
 /* photo mode: the rectified photo is the paper, our digits are badges */
@@ -333,31 +321,9 @@ svg {
   cursor: pointer;
 }
 .pad button:active,
-.seg button:active,
 .btn:active,
 .round:active {
   filter: brightness(1.4);
-}
-
-.seg {
-  display: flex;
-  margin: 12px 12px 0;
-  padding: 2px;
-  border-radius: 10px;
-  background: var(--panel);
-  flex: none;
-}
-.seg button {
-  flex: 1;
-  height: 36px;
-  border: 0;
-  border-radius: 8px;
-  background: none;
-  font-size: 15px;
-  cursor: pointer;
-}
-.seg button[aria-selected="true"] {
-  background: #636366;
 }
 
 .actions {
@@ -424,7 +390,7 @@ svg {
     grid-row: 3 / 5;
   }
   .pad,
-  .seg {
+  .actions {
     align-self: end;
   }
 }
