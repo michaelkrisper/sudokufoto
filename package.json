@@ -1,7 +1,7 @@
 {
   "name": "sudokufoto",
   "version": "1.0.0",
-  "description": "Sudoku fotografieren und sofort die Lösung sehen: Erkennung und Löser laufen komplett im Browser, als installierbare Web-App",
+  "description": "Photograph a sudoku and see the solution instantly: recognition and solver run entirely in the browser as an installable web app",
   "homepage": "https://michaelkrisper.github.io/sudokufoto/",
   "repository": {
     "type": "git",

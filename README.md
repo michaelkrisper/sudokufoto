@@ -1,52 +1,90 @@
-# Sudoku-Foto
+# Sudokufoto
 
-Sudoku mit dem Handy fotografieren, sofort die Lösung sehen. Installierbare Web-App (PWA) für Android und iPhone, läuft komplett auf dem Gerät: kein Upload, kein Konto, offline nutzbar.
+Photograph a sudoku with your phone and see the solution instantly.
 
-**App:** https://michaelkrisper.github.io/sudokufoto/
+[![CI](https://github.com/michaelkrisper/sudokufoto/actions/workflows/ci.yml/badge.svg)](https://github.com/michaelkrisper/sudokufoto/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Live demo](https://img.shields.io/badge/demo-GitHub%20Pages-2ea44f)](https://michaelkrisper.github.io/sudokufoto/)
 
-- **Live-Kamera mit Auto-Auslöser:** Sudoku ins Bild halten, sobald es eindeutig lösbar erkannt ist, erscheint die Lösung. Alternativ Auslöser oder ein Foto aus der Galerie.
-- **Gedreht oder schräg fotografiert** ist egal: Perspektive wird entzerrt, Querformat und Kopfüber werden erkannt.
-- **Handschrift:** In einem angefangenen Sudoku werden Bleistift- und Kugelschreiber-Einträge von den gedruckten Ziffern unterschieden. Die Lösung zeigt dann, welche eigenen Einträge falsch sind.
-- **Prüfen und korrigieren:** Unsichere Ziffern sind markiert, jede Zelle lässt sich per Ziffernblock ändern; Sudokus lassen sich auch ganz von Hand eingeben.
-- **Lösung direkt im Foto:** die fehlenden Ziffern werden ins entzerrte Foto geschrieben.
+**Live: https://michaelkrisper.github.io/sudokufoto/**
 
-## Wie es funktioniert
+An installable web app (PWA) for Android and iPhone. Recognition and solving
+run entirely on the device. The user interface is in German.
 
-Alles ist Vanilla JS ohne Build-Schritt und ohne Bibliotheken.
+<img src="docs/screenshot.png" alt="Solved sudoku: the missing digits are written in blue into the rectified photo" width="320">
 
-| Datei | Aufgabe |
+## Features
+
+- **Live camera with auto capture:** hold the sudoku in view; as soon as it is
+  recognised with a unique solution, the solution appears. A shutter button
+  and picking a photo from the gallery work too.
+- **Rotated or tilted photos:** the perspective is rectified, landscape and
+  upside-down shots are detected.
+- **Handwriting:** in a puzzle someone already started, pencil and pen entries
+  are told apart from the printed digits, and wrong entries are pointed out.
+- **Review and correct:** uncertain digits are marked, every cell can be
+  changed with a keypad, and puzzles can be entered entirely by hand.
+- **Solution in the photo:** the missing digits are drawn into the rectified
+  photo.
+- **Offline:** a network-first service worker caches the app shell.
+
+## How it works
+
+Vanilla JavaScript, no build step, no runtime dependencies.
+
+| File | Role |
 |---|---|
-| `js/detect.js` | Adaptive Schwelle, Zusammenhangskomponenten, Raster als größtes Viereck auf der konvexen Hülle, geprüft über das Linienmuster; Entzerrung per Homographie; Ziffern je Zelle freistellen |
-| `js/ocr.js`, `js/model.js` | Kleines neuronales Netz (576 → 128 → 9, int8, 100 KB) für die Ziffern |
-| `js/hand.js` | Druck oder Handschrift: Höhe, relative Schwärze, Farbe; der Löser entscheidet mit |
-| `js/read.js` | Gesamter Ablauf inkl. Ausrichtung (die Orientierung mit den meisten sicher gelesenen Ziffern gewinnt) |
-| `js/solver.js` | Backtracking mit Bitmasken, erkennt mehrdeutige und unlösbare Sudokus |
-| `js/worker.js` | Erkennung im Web Worker, damit die Kamera flüssig bleibt |
+| `js/detect.js` | Adaptive threshold, connected components, grid as the largest quadrilateral on the convex hull, verified by its line pattern; rectification by homography; cuts out the digit in each cell |
+| `js/ocr.js`, `js/model.js` | Small neural network (576 -> 128 -> 9, int8 weights, ~100 KB) that classifies the digits |
+| `js/hand.js` | Print vs. handwriting from stroke height, relative darkness and colour; the solver has the final say |
+| `js/read.js` | Full pipeline including orientation (the rotation with the most confidently read digits wins) |
+| `js/solver.js` | Bitmask backtracking solver; detects ambiguous and unsolvable puzzles |
+| `js/worker.js` | Runs recognition in a Web Worker so the camera preview stays smooth |
 
-Das Netz ist mit Ziffern aus **synthetischen Handyfotos** trainiert (`tools/synth.py`: zufällige Sudokus in über 100 Schriften, mit Perspektive, Drehung, Schatten, Unschärfe, Rauschen und JPEG-Artefakten), ausgeschnitten mit genau demselben JS-Code wie in der App. Validiert wird mit Schriftfamilien, die beim Training nie vorkamen.
+The network is trained on digits from **synthetic phone photos**
+(`tools/synth.py`: random sudokus in more than 100 fonts with perspective,
+rotation, shadows, blur, noise and JPEG artefacts), cut out with exactly the
+same JavaScript code the app uses. Validation uses font families never seen in
+training.
 
-## Entwicklung
+## Privacy
+
+Photos never leave the device: there is no server component, no upload, no
+account and no tracking.
+
+## Development
+
+Requires Node 24, and Python 3 with Pillow and NumPy for the tests (they render
+synthetic photos).
 
 ```sh
 npm install
 npm run serve          # http://localhost:8792
-npm test               # Löser + Erkennung auf synthetischen Fotos (braucht python3 mit Pillow + numpy)
-npm run lint
-python3 -m http.server 8792 & node scripts/e2e.mjs   # headless Chrome mit Fake-Kamera
+npm test               # solver, handwriting split and recognition on synthetic photos
+npm run lint           # Biome
+npm run check          # lint + tests
 ```
 
-Erkennung messen und Netz neu trainieren:
+End-to-end test in headless Chrome with a fake camera (needs `google-chrome`):
 
 ```sh
-tools/synth.py /pfad/test --n 100 --turns        # Testfotos (PGM + cases.json)
-node tools/eval.mjs /pfad/test --verbose
-tools/synth.py - --n 300 --fonts train | node tools/extract.mjs train-1.bin   # mehrfach, andere --seed
-tools/synth.py - --n 300 --fonts test  | node tools/extract.mjs val.bin
-tools/train.py train-*.bin --val val.bin         # schreibt js/model.js
+npm run serve &
+npm run test:e2e       # or: node scripts/e2e.mjs <url> [screenshot-dir]
 ```
 
-Nach App-Änderungen lädt der Service Worker (Network-first) beim nächsten Start automatisch die neue Version.
+Measuring recognition and retraining the network:
 
-## Lizenz
+```sh
+tools/synth.py /path/test --n 100 --turns        # test photos (PGM + cases.json)
+node tools/eval.mjs /path/test --verbose
+tools/synth.py - --n 300 --fonts train | node tools/extract.mjs train-1.bin   # repeat with other --seed
+tools/synth.py - --n 300 --fonts test  | node tools/extract.mjs val.bin
+python3 tools/train.py train-*.bin --val val.bin  # writes js/model.js
+```
 
-MIT
+Every push to `main` runs lint and tests; only if they pass is the site
+deployed to GitHub Pages.
+
+## License
+
+[MIT](LICENSE)
