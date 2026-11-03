@@ -4,6 +4,7 @@ Photograph a sudoku with your phone and see the solution instantly.
 
 [![CI](https://github.com/michaelkrisper/sudokufoto/actions/workflows/ci.yml/badge.svg)](https://github.com/michaelkrisper/sudokufoto/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Node](https://img.shields.io/badge/node-%3E%3D24-339933)](package.json)
 [![Live demo](https://img.shields.io/badge/demo-GitHub%20Pages-2ea44f)](https://michaelkrisper.github.io/sudokufoto/)
 
 **Live: https://michaelkrisper.github.io/sudokufoto/**
@@ -32,14 +33,14 @@ run entirely on the device. The user interface is in German.
 
 Vanilla JavaScript, no build step, no runtime dependencies.
 
-| File | Role |
-|---|---|
-| `js/detect.js` | Adaptive threshold, connected components, grid as the largest quadrilateral on the convex hull, verified by its line pattern; rectification by homography; cuts out the digit in each cell |
-| `js/ocr.js`, `js/model.js` | Small neural network (576 -> 128 -> 9, int8 weights, ~100 KB) that classifies the digits |
-| `js/hand.js` | Print vs. handwriting from stroke height, relative darkness and colour; the solver has the final say |
-| `js/read.js` | Full pipeline including orientation (the rotation with the most confidently read digits wins) |
-| `js/solver.js` | Bitmask backtracking solver; detects ambiguous and unsolvable puzzles |
-| `js/worker.js` | Runs recognition in a Web Worker so the camera preview stays smooth |
+| File                       | Role                                                                                                                                                                                       |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `js/detect.js`             | Adaptive threshold, connected components, grid as the largest quadrilateral on the convex hull, verified by its line pattern; rectification by homography; cuts out the digit in each cell |
+| `js/ocr.js`, `js/model.js` | Small neural network (576 -> 128 -> 9, int8 weights, ~100 KB) that classifies the digits                                                                                                   |
+| `js/hand.js`               | Print vs. handwriting from stroke height, relative darkness and colour; the solver has the final say                                                                                       |
+| `js/read.js`               | Full pipeline including orientation (the rotation with the most confidently read digits wins)                                                                                              |
+| `js/solver.js`             | Bitmask backtracking solver; detects ambiguous and unsolvable puzzles                                                                                                                      |
+| `js/worker.js`             | Runs recognition in a Web Worker so the camera preview stays smooth                                                                                                                        |
 
 The network is trained on digits from **synthetic phone photos**
 (`tools/synth.py`: random sudokus in more than 100 fonts with perspective,
@@ -58,6 +59,7 @@ Requires Node 24, and Python 3 with Pillow and NumPy for the tests (they render
 synthetic photos).
 
 ```sh
+pip install -r tools/requirements.txt
 npm install
 npm run serve          # http://localhost:8792
 npm test               # solver, handwriting split and recognition on synthetic photos
