@@ -1,2 +1,9 @@
 node_modules/
 __pycache__/
+*.pyc
+.venv/
+# training data and synthetic test photos (tools/synth.py, tools/extract.mjs)
+*.bin
+*.pgm
+cases.json
+.DS_Store
