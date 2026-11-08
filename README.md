@@ -3,6 +3,7 @@
 Photograph a sudoku with your phone and see the solution instantly.
 
 [![CI](https://github.com/michaelkrisper/sudokufoto/actions/workflows/ci.yml/badge.svg)](https://github.com/michaelkrisper/sudokufoto/actions/workflows/ci.yml)
+[![Version](https://img.shields.io/github/v/tag/michaelkrisper/sudokufoto?sort=semver&label=version)](https://github.com/michaelkrisper/sudokufoto/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Node](https://img.shields.io/badge/node-%3E%3D24-339933)](package.json)
 [![Live demo](https://img.shields.io/badge/demo-GitHub%20Pages-2ea44f)](https://michaelkrisper.github.io/sudokufoto/)
@@ -85,7 +86,13 @@ python3 tools/train.py train-*.bin --val val.bin  # writes js/model.js
 ```
 
 Every push to `main` runs lint and tests; only if they pass is the site
-deployed to GitHub Pages.
+deployed to GitHub Pages. Every merge to `main` is tagged with the next patch
+version; bundled releases with release notes come from the Release workflow
+(see [CONTRIBUTING](CONTRIBUTING.md#versions-and-releases)).
+
+## Contributing
+
+Issues and pull requests are welcome; see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
 
