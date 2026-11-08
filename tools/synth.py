@@ -5,7 +5,7 @@ Every case is a random puzzle printed in a random font and line style on paper
 with some surrounding clutter, put into a photo with perspective, rotation,
 uneven light, blur, noise and JPEG artefacts.
 
-  tools/synth.py OUT --n 50 [--seed 1] [--fonts train|test|all] [--size 1200]
+  tools/synth.py OUT --n 50 [--seed 1] [--fonts train|test|all | --font FILE] [--size 1200]
 
 With OUT = "-" it streams instead (for tools/extract.mjs): per case one JSON
 line, then the grayscale bytes.
@@ -239,6 +239,7 @@ def main():
     ap.add_argument("--n", type=int, default=50)
     ap.add_argument("--seed", type=int, default=1)
     ap.add_argument("--fonts", default="test", choices=["train", "test", "all"])
+    ap.add_argument("--font", help="one font file instead of --fonts")
     ap.add_argument("--size", type=int, default=1200)
     ap.add_argument("--jpeg", action="store_true")
     ap.add_argument("--puzzle", help="81 digits to print instead of random ones")
@@ -247,7 +248,7 @@ def main():
     stream = a.out == "-"
     if not stream:
         os.makedirs(a.out, exist_ok=True)
-    fonts = font_files(a.fonts)
+    fonts = [a.font] if a.font else font_files(a.fonts)
     if not fonts:
         raise SystemExit("no fonts found")
     cases = []
