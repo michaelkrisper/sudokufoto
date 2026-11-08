@@ -85,10 +85,11 @@ tools/synth.py - --n 300 --fonts test  | node tools/extract.mjs val.bin
 python3 tools/train.py train-*.bin --val val.bin  # writes js/model.js
 ```
 
-Every push to `main` runs lint and tests; only if they pass is the site
-deployed to GitHub Pages. Every merge to `main` is tagged with the next patch
-version; bundled releases with release notes come from the Release workflow
-(see [CONTRIBUTING](CONTRIBUTING.md#versions-and-releases)).
+Every push and pull request runs lint, the unit tests and the end-to-end test;
+only if they pass is `main` deployed to GitHub Pages. Every merge to `main` is
+tagged with the next patch version; bundled releases with release notes come
+from the Release workflow (see
+[CONTRIBUTING](CONTRIBUTING.md#versions-and-releases)).
 
 ## Contributing
 

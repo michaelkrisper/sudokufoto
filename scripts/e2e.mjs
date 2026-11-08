@@ -27,6 +27,9 @@ const PUZZLE2 = '000260701680070090190004500820100040004602900050003028009300074
 const SOLUTION2 = '435269781682571493197834562826195347374682915951743628519326874248957136763418259';
 
 const work = mkdtempSync(join(tmpdir(), 'sudokufoto-e2e-'));
+// One fixed font (CI installs it), so the photos and their recognition are the
+// same on every machine; a random installed font can make a digit uncertain.
+const font = spawnSync('fc-match', ['-f', '%{file}', 'Liberation Sans'], { encoding: 'utf8' }).stdout;
 for (const [name, puzzle, seed] of [
   ['cam', PUZZLE, '11'],
   ['pick', PUZZLE2, '12'],
@@ -38,8 +41,8 @@ for (const [name, puzzle, seed] of [
     '1',
     '--seed',
     seed,
-    '--fonts',
-    'all',
+    '--font',
+    font,
     '--jpeg',
     '--size',
     '960',

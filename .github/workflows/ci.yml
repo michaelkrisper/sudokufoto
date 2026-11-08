@@ -28,6 +28,14 @@ jobs:
       - run: npm ci
       - run: npm run lint
       - run: npm test
+      - run: |
+          python3 -m http.server 8792 &
+          npm run test:e2e -- http://localhost:8792/ e2e-screenshots
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: e2e-screenshots
+          path: e2e-screenshots
   deploy:
     needs: [check, version]
     if: needs.version.outputs.version != ''
