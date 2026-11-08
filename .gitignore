@@ -7,3 +7,4 @@ __pycache__/
 *.pgm
 cases.json
 .DS_Store
+CLAUDE.local.md
